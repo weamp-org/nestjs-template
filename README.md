@@ -193,6 +193,7 @@ See [docs/auth.md](docs/auth.md) for a detailed walkthrough.
 - **Add a new resource** — See [docs/new-resource.md](docs/new-resource.md) for a step-by-step guide
 - **Database changes** — Edit `prisma/schema.prisma`, run `pnpm prisma migrate dev`, then `pnpm prisma generate`
 - **Testing** — See [docs/testing.md](docs/testing.md) for patterns and conventions
+- **Logging** — See [docs/logging.md](docs/logging.md) for the middleware route pattern, `originalUrl` vs `req.url`, and known limitations
 
 ## Deployment
 
