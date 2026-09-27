@@ -106,7 +106,8 @@ nestjs-template/
 │   │   └── roles.guard.ts          # Roles authorization guard
 │   ├── logging/
 │   │   ├── pino.config.ts         # Pino configuration (structured JSON, redaction, serializers)
-│   │   └── logging.middleware.ts  # Request ID propagation to response header
+│   │   ├── logging.middleware.ts  # Request ID propagation to response header
+│   │   └── routes.ts              # ALL_ROUTES wildcard shared by both middlewares
 │   ├── filters/
 │   │   └── global-exception.filter.ts # Global exception filter with Prisma error translation
 │   ├── prisma/
