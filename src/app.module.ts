@@ -49,6 +49,8 @@ import { WebhooksModule } from './webhooks/webhooks.module.js';
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggingMiddleware).forRoutes('*path');
+    // `{*path}` is the path-to-regexp v8 optional wildcard. Plain `*path` would
+    // skip `/api/v1/`, dropping the x-request-id header on those requests.
+    consumer.apply(LoggingMiddleware).forRoutes('{*path}');
   }
 }
