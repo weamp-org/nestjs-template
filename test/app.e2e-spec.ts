@@ -28,6 +28,19 @@ describe('AppController (e2e)', () => {
       .expect('Hello World!');
   });
 
+  // Regression guard for the ALL_ROUTES wildcard in src/logging/routes.ts.
+  // LoggingMiddleware sets x-request-id, so the header's presence proves the
+  // middleware matched. path-to-regexp v8 compiles the plain `*path` wildcard
+  // to require a trailing slash before the wildcard, so a regression to `*path`
+  // drops the header here while every other test still passes. `/api/v1/` is
+  // used rather than the bare prefix root, which no form of the pattern matches.
+  it('applies LoggingMiddleware to /api/v1/ (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/api/v1/')
+      .expect(200)
+      .expect('x-request-id', /.+/);
+  });
+
   afterEach(async () => {
     await app.close();
   });

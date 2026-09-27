@@ -10,6 +10,7 @@ import { ClerkAuthGuard } from './clerk-auth/clerk-auth.guard.js';
 import { GlobalExceptionFilter } from './filters/global-exception.filter.js';
 import { LoggingMiddleware } from './logging/logging.middleware.js';
 import { pinoConfig } from './logging/pino.config.js';
+import { ALL_ROUTES } from './logging/routes.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { UsersModule } from './users/users.module.js';
 import { WebhooksModule } from './webhooks/webhooks.module.js';
@@ -49,8 +50,6 @@ import { WebhooksModule } from './webhooks/webhooks.module.js';
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    // `{*path}` is the path-to-regexp v8 optional wildcard. Plain `*path` would
-    // skip `/api/v1/`, dropping the x-request-id header on those requests.
-    consumer.apply(LoggingMiddleware).forRoutes('{*path}');
+    consumer.apply(LoggingMiddleware).forRoutes(ALL_ROUTES);
   }
 }

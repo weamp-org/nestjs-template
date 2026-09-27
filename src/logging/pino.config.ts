@@ -2,17 +2,17 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { Params } from 'nestjs-pino';
 import { randomUUID } from 'node:crypto';
 
+import { ALL_ROUTES } from './routes.js';
+
 const isProduction = process.env.NODE_ENV === 'production';
 
 export const pinoConfig: Params = {
   // nestjs-pino defaults to `[{ path: '*', method: RequestMethod.ALL }]`. Nest
   // applies the global prefix, so the Express adapter registers `/api/v1/*`,
   // which path-to-regexp v8 (Express 5) rejects for having an unnamed wildcard.
-  // It logs a legacy-route WARN and auto-converts on every boot. `{*path}` is
+  // It logs a legacy-route WARN and auto-converts on every boot. ALL_ROUTES is
   // the optional named wildcard that conversion produces, stated explicitly.
-  // Note the optional form: plain `*path` does not match `/api/v1/`.
-  // Keep in sync with the LoggingMiddleware route in app.module.ts.
-  forRoutes: ['{*path}'],
+  forRoutes: [ALL_ROUTES],
   pinoHttp: {
     level: process.env.LOG_LEVEL ?? (isProduction ? 'info' : 'debug'),
     transport: isProduction
