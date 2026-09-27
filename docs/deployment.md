@@ -29,11 +29,12 @@ Ensure these variables are set in production:
 
 ## Build and run
 
+Prisma CLI and the Nest build tooling live in `devDependencies`, so the build
+pipeline needs a full install (not a production-only install):
+
 ```bash
-# 1. Install dependencies (omit devDependencies for smaller deploy)
-pnpm install --prod
-# Note: --prod is not an official pnpm flag — use NODE_ENV=production pnpm install
-# to skip devDependencies
+# 1. Install dependencies (includes Prisma CLI and Nest CLI)
+pnpm install --frozen-lockfile
 
 # 2. Apply database migrations
 pnpm prisma migrate deploy
@@ -44,9 +45,16 @@ pnpm prisma generate
 # 4. Build the application
 pnpm build
 
-# 5. Start the server
+# 5. Start the server (set NODE_ENV=production in the process environment)
 pnpm start:prod
 ```
+
+If you ship a prebuilt `dist/` (and already-generated Prisma client) into a
+runtime-only image, you can then install production dependencies only with
+`pnpm install --frozen-lockfile --prod --ignore-scripts`. Do not use `--prod`
+before `prisma generate` or `pnpm build` in this template. `--ignore-scripts`
+skips the root `postinstall` (`prisma generate`), which would fail without the
+Prisma CLI from `devDependencies`.
 
 ---
 
@@ -67,11 +75,12 @@ The repository includes `compose.yaml` for local development. For production, bu
 FROM node:24-alpine
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
-RUN corepack enable && pnpm install --frozen-lockfile --prod
+COPY prisma.config.ts ./
 COPY prisma ./prisma
-RUN pnpm prisma generate
+RUN corepack enable && pnpm install --frozen-lockfile
 COPY dist ./dist
 EXPOSE 3000
+ENV NODE_ENV=production
 CMD ["node", "dist/src/main"]
 ```
 
