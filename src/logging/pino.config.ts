@@ -60,7 +60,25 @@ export const pinoConfig: Params = {
       },
     },
     autoLogging: {
-      ignore: (req) => req.url === '/api/v1/health',
+      // The health check is the global prefix root, `GET /api/v1`, handled by
+      // AppController's bare `@Get()`. Both spellings are listed because Express
+      // matches `/api/v1/` to the same route.
+      //
+      // This reads `originalUrl`, not `url`. Express strips the matched mount
+      // prefix from `url`, so inside middleware mounted on `/api/v1/{*path}`
+      // the health check reports `url === '/'` and every other route reports
+      // `/users`, `/webhooks/...` and so on. `originalUrl` is the untouched
+      // request path. The previous `req.url === '/api/v1/health'` could never
+      // match: that route does not exist, and `url` would not have held that
+      // value here either. The query string is stripped since uptime probes
+      // often append one.
+      ignore: (req) => {
+        const { originalUrl = '' } = req as IncomingMessage & {
+          originalUrl?: string;
+        };
+        const [pathname] = originalUrl.split('?');
+        return pathname === '/api/v1' || pathname === '/api/v1/';
+      },
     },
   },
 };
