@@ -11,8 +11,15 @@ Thanks for your interest in contributing to the NestJS template.
 
 ```bash
 pnpm install
+
+# Docker Compose reads the Postgres password from this file (gitignored)
+cp secrets/postgres_password.txt.example secrets/postgres_password.txt
+# Edit secrets/postgres_password.txt with your desired PostgreSQL password
+
 cp .env.local.example .env.local
-echo 'DATABASE_URL="postgresql://postgres:postgres@localhost:5432/nestjs-template"' > .env
+# Edit .env.local with your Clerk keys and ensure DATABASE_URL uses the same
+# password as secrets/postgres_password.txt
+
 docker compose up -d
 pnpm prisma migrate dev
 pnpm start:dev
