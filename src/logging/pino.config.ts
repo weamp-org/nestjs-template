@@ -5,6 +5,12 @@ import { randomUUID } from 'node:crypto';
 const isProduction = process.env.NODE_ENV === 'production';
 
 export const pinoConfig: Params = {
+  // nestjs-pino defaults to `[{ path: '*', method: RequestMethod.ALL }]`. Nest
+  // prefixes it with the global prefix, giving `/api/v1/*`, which path-to-regexp
+  // v8 (Express 5) rejects for having an unnamed wildcard. Overriding it with a
+  // named wildcard logs the middleware to every route, same as the default, and
+  // keeps the legacy-route warning out of the boot output.
+  forRoutes: ['*path'],
   pinoHttp: {
     level: process.env.LOG_LEVEL ?? (isProduction ? 'info' : 'debug'),
     transport: isProduction
