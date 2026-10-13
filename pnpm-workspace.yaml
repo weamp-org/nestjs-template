@@ -1,6 +1,7 @@
 allowBuilds:
   '@clerk/shared': true
   '@nestjs/core': true
+  '@parcel/watcher': true
   '@prisma/engines': true
   '@scarf/scarf': true
   prisma: true
